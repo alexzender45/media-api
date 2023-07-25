@@ -1,0 +1,44 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DatabaseModule = void 0;
+const common_1 = require("@nestjs/common");
+const knex_1 = require("knex");
+const objection_1 = require("objection");
+const models_1 = require("./models");
+const database_token_1 = require("./database.token");
+const knexConfig = require("../../knexfile");
+const providers = [
+    {
+        provide: database_token_1.DATABASE_TOKEN.KnexConnection,
+        useFactory: async () => {
+            const knexClient = await knexConfig;
+            const dbConnection = (0, knex_1.default)(knexClient);
+            objection_1.Model.knex(dbConnection);
+            return dbConnection;
+        },
+    },
+];
+let DatabaseModule = class DatabaseModule {
+};
+DatabaseModule = __decorate([
+    (0, common_1.Global)(),
+    (0, common_1.Module)({
+        providers,
+        imports: [
+            models_1.DbUserModule,
+            models_1.DbBaseModelModule,
+        ],
+        exports: [
+            models_1.DbUserModule,
+            models_1.DbBaseModelModule,
+        ],
+    })
+], DatabaseModule);
+exports.DatabaseModule = DatabaseModule;
+//# sourceMappingURL=database.module.js.map
