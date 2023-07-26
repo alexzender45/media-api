@@ -18,6 +18,7 @@ export class EnvironmentService {
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
       musixmatch_api_key: process.env.MUSIXMATCH_API_KEY,
+      youtube_api_key: process.env.YOUTUBE_API_KEY,
     };
   }
 

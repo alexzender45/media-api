@@ -22,4 +22,7 @@ export interface EnvironmentVariables {
   // musixmatch
   musixmatch_api_key: string;
 
+  // youtube
+  youtube_api_key: string;
+
 }

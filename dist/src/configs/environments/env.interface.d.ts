@@ -11,4 +11,5 @@ export interface EnvironmentVariables {
     client_id: string;
     client_secret: string;
     musixmatch_api_key: string;
+    youtube_api_key: string;
 }

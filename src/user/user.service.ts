@@ -134,38 +134,57 @@ export class UserService {
     const token = await this.getToken();
     const headersRequest = { Authorization: `Bearer ${token}` };
     const { data } = await axios
-        .get(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=10`, {
-            headers: headersRequest,
-        })
-        .catch((err) => {
-            throw new BadRequestException(err.response.data.error.message);
-        });
+    .get(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=10`, {
+        headers: headersRequest,
+    })
+    .catch((err) => {
+        throw new BadRequestException(err.response.data.error.message);
+    });
 
-    const trackData = await Promise.all(data.tracks.items.map(async item => {
-        const trackName = item.name;
-        const artistName = item.artists.map(artist => artist.name).join(', ');
-        const albumName = item.album.name;
-        const spotifyUrl = item.external_urls.spotify;
+const trackData = await Promise.all(data.tracks.items.map(async item => {
+    const trackName = item.name;
+    const artistName = item.artists.map(artist => artist.name).join(', ');
+    const albumName = item.album.name;
+    const spotifyUrl = item.external_urls.spotify;
+    const albumArtUrl = item.album.images[0]?.url; // Get URL of album art
 
-        // Get lyrics from Musixmatch
-        const lyricsResponse = await axios.get(`https://api.musixmatch.com/ws/1.1/matcher.lyrics.get`, {
-            params: {
-                q_track: trackName,
-                q_artist: artistName,
-                apikey: env.musixmatch_api_key
-            }
-        });
+    // Get lyrics from Musixmatch
+    const lyricsResponse = await axios.get(`https://api.musixmatch.com/ws/1.1/matcher.lyrics.get`, {
+        params: {
+            q_track: trackName,
+            q_artist: artistName,
+            apikey: env.musixmatch_api_key
+        }
+    });
 
-        const lyrics = lyricsResponse.data.message.body.lyrics;
-        return {
-            name: trackName,
-            artist: artistName,
-            album: albumName,
-            spotify_url: spotifyUrl,
-            lyrics
-        };
-    }));
+    const lyrics = lyricsResponse.data.message.body.lyrics;
 
-    return trackData;
+    // Get YouTube video
+    const youtubeResponse = await axios.get('https://www.googleapis.com/youtube/v3/search', {
+        params: {
+            part: 'snippet',
+            maxResults: 1,
+            q: `${trackName} ${artistName}`,
+            key: env.youtube_api_key,
+            type: 'video'
+        }
+    });
+
+    const youtubeVideoId = youtubeResponse.data.items[0]?.id?.videoId;
+    const youtubeVideoUrl = youtubeVideoId ? `https://www.youtube.com/watch?v=${youtubeVideoId}` : null;
+
+    return {
+        name: trackName,
+        artist: artistName,
+        album: albumName,
+        spotify_url: spotifyUrl,
+        lyrics,
+        youtube_video_url: youtubeVideoUrl,
+        album_art_url: albumArtUrl // Added field for album art URL
+    };
+}));
+
+return trackData;
+
   }
   }

@@ -102,10 +102,12 @@ let UserService = class UserService {
             throw new common_1.BadRequestException(err.response.data.error.message);
         });
         const trackData = await Promise.all(data.tracks.items.map(async (item) => {
+            var _a, _b, _c;
             const trackName = item.name;
             const artistName = item.artists.map(artist => artist.name).join(', ');
             const albumName = item.album.name;
             const spotifyUrl = item.external_urls.spotify;
+            const albumArtUrl = (_a = item.album.images[0]) === null || _a === void 0 ? void 0 : _a.url;
             const lyricsResponse = await axios_1.default.get(`https://api.musixmatch.com/ws/1.1/matcher.lyrics.get`, {
                 params: {
                     q_track: trackName,
@@ -114,12 +116,25 @@ let UserService = class UserService {
                 }
             });
             const lyrics = lyricsResponse.data.message.body.lyrics;
+            const youtubeResponse = await axios_1.default.get('https://www.googleapis.com/youtube/v3/search', {
+                params: {
+                    part: 'snippet',
+                    maxResults: 1,
+                    q: `${trackName} ${artistName}`,
+                    key: env.youtube_api_key,
+                    type: 'video'
+                }
+            });
+            const youtubeVideoId = (_c = (_b = youtubeResponse.data.items[0]) === null || _b === void 0 ? void 0 : _b.id) === null || _c === void 0 ? void 0 : _c.videoId;
+            const youtubeVideoUrl = youtubeVideoId ? `https://www.youtube.com/watch?v=${youtubeVideoId}` : null;
             return {
                 name: trackName,
                 artist: artistName,
                 album: albumName,
                 spotify_url: spotifyUrl,
-                lyrics
+                lyrics,
+                youtube_video_url: youtubeVideoUrl,
+                album_art_url: albumArtUrl
             };
         }));
         return trackData;
