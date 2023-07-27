@@ -131,6 +131,7 @@ export class UserService {
   }
 
   public async searchTrack(query: string) {
+    try {
     const token = await this.getToken();
     const headersRequest = { Authorization: `Bearer ${token}` };
     const { data } = await axios
@@ -138,6 +139,7 @@ export class UserService {
         headers: headersRequest,
     })
     .catch((err) => {
+      console.log(err)
         throw new BadRequestException(err.response.data.error.message);
     });
 
@@ -169,7 +171,6 @@ const trackData = await Promise.all(data.tracks.items.map(async item => {
             type: 'video'
         }
     });
-
     const youtubeVideoId = youtubeResponse.data.items[0]?.id?.videoId;
     const youtubeVideoUrl = youtubeVideoId ? `https://www.youtube.com/watch?v=${youtubeVideoId}` : null;
 
@@ -187,4 +188,11 @@ const trackData = await Promise.all(data.tracks.items.map(async item => {
 return trackData;
 
   }
+  catch (e) {
+   // console.log(e)
+    throw new InternalServerErrorException(
+      `Error generating JWT token: ${e.message}`,
+    );
+  }
+}
   }
