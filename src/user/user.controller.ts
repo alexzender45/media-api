@@ -17,17 +17,28 @@ import { BaseService } from '../base';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
 import { JwtAuthGuard } from '../auth';
+import { TenantService } from 'src/tenant/tenant.service';
 
 @Controller('users')
 export class UserController {
   @Inject(UserService)
   private readonly userService: UserService;
+  @Inject(TenantService)
+  private readonly tenantService: TenantService;
   @Inject(BaseService)
   private readonly baseService: BaseService;
 
   @Post('/signup')
-  public async create(@Body() data: CreateUserDto) {
+  public async create(@Body() data: CreateUserDto, @Req() req: any
+
+  ) {
+    console.log(req.query.tenantId);
+     await this.tenantService.createSchema(req.query.tenantId);
+    const migrate = await this.tenantService.runMigrations(req.query.tenantId); 
+    console.log('migrate', migrate);
     const newUser = await this.userService.create(data);
+
+    // create schema for user;
 
     return this.baseService.transformResponse(
       'User created successfully',

@@ -37,6 +37,7 @@ const providers = [
   exports: [
     DbUserModule,
     DbBaseModelModule,
+    DATABASE_TOKEN.KnexConnection
   ],
 })
 export class DatabaseModule {}

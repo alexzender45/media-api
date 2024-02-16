@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.down = exports.up = void 0;
-const database_schema_1 = require("../database.schema");
 const database_tables_1 = require("../database.tables");
 async function up(knex) {
     knex.schema
+        .withSchema('{{schemaName}}')
         .hasTable(database_tables_1.DatabaseTable.users)
         .then((tableExists) => {
         if (!tableExists) {
@@ -22,7 +22,7 @@ async function up(knex) {
 exports.up = up;
 async function down(knex) {
     return knex.schema
-        .withSchema(database_schema_1.DatabaseSchema.userService)
+        .withSchema('{{schemaName}}')
         .dropTableIfExists(database_tables_1.DatabaseTable.users);
 }
 exports.down = down;

@@ -5,7 +5,6 @@ class KnexFile {
   private static getConnection(): Connection {
     const { db_host, db_password, db_user, db_name, db_port } =
       EnvironmentService.getAll();
-
     return {
       host: db_host,
       user: db_user,

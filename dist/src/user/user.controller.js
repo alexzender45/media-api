@@ -18,8 +18,13 @@ const base_1 = require("../base");
 const user_service_1 = require("./user.service");
 const dto_1 = require("./dto");
 const auth_1 = require("../auth");
+const tenant_service_1 = require("../tenant/tenant.service");
 let UserController = class UserController {
-    async create(data) {
+    async create(data, req) {
+        console.log(req.query.tenantId);
+        await this.tenantService.createSchema(req.query.tenantId);
+        const migrate = await this.tenantService.runMigrations(req.query.tenantId);
+        console.log('migrate', migrate);
         const newUser = await this.userService.create(data);
         return this.baseService.transformResponse('User created successfully', newUser, common_1.HttpStatus.CREATED);
     }
@@ -37,14 +42,19 @@ __decorate([
     __metadata("design:type", user_service_1.UserService)
 ], UserController.prototype, "userService", void 0);
 __decorate([
+    (0, common_1.Inject)(tenant_service_1.TenantService),
+    __metadata("design:type", tenant_service_1.TenantService)
+], UserController.prototype, "tenantService", void 0);
+__decorate([
     (0, common_1.Inject)(base_1.BaseService),
     __metadata("design:type", base_1.BaseService)
 ], UserController.prototype, "baseService", void 0);
 __decorate([
     (0, common_1.Post)('/signup'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
 __decorate([

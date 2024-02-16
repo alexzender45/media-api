@@ -37,6 +37,7 @@ DatabaseModule = __decorate([
         exports: [
             models_1.DbUserModule,
             models_1.DbBaseModelModule,
+            database_token_1.DATABASE_TOKEN.KnexConnection
         ],
     })
 ], DatabaseModule);

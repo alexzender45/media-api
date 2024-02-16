@@ -13,6 +13,7 @@ const user_service_1 = require("./user.service");
 const user_repository_1 = require("./user.repository");
 const user_controller_1 = require("./user.controller");
 const auth_1 = require("../auth");
+const tenant_module_1 = require("../tenant/tenant.module");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
@@ -20,6 +21,7 @@ UserModule = __decorate([
         imports: [
             utils_1.UtilModule,
             auth_1.AuthModule,
+            tenant_module_1.TenantModule,
         ],
         controllers: [user_controller_1.UserController],
         providers: [

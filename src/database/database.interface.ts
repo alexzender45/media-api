@@ -41,3 +41,10 @@ export interface ConfigObject {
   seeds: Seeds;
   debug?: boolean;
 }
+
+// database.interface.ts
+export interface DatabaseInterface {
+  createSchema(schemaName: string): Promise<void>;
+  runMigrations(schemaName: string): Promise<void>;
+}
+

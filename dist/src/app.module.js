@@ -14,7 +14,11 @@ const database_1 = require("./database");
 const configs_1 = require("./configs");
 const user_1 = require("./user");
 const base_1 = require("./base");
+const middleware_1 = require("./utils/middleware");
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer.apply(middleware_1.KnexMiddleware).forRoutes('*');
+    }
 };
 AppModule = __decorate([
     (0, common_1.Module)({
@@ -25,7 +29,7 @@ AppModule = __decorate([
             base_1.BaseModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService]
     })
 ], AppModule);
 exports.AppModule = AppModule;

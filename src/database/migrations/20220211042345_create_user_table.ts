@@ -5,9 +5,7 @@ import { DatabaseTable } from '../database.tables';
 export async function up(knex: Knex): Promise<void> {
   // return knex.transaction(async (trx: Knex.Transaction) =>
   knex.schema
-    // .createSchemaIfNotExists(DatabaseSchema.sonalysisService)
-    // .then(() =>
-    // trx.schema
+    .withSchema('{{schemaName}}')
     .hasTable(DatabaseTable.users)
     .then((tableExists: boolean) => {
       if (!tableExists) {
@@ -29,6 +27,6 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema
-    .withSchema(DatabaseSchema.userService)
+    .withSchema('{{schemaName}}')
     .dropTableIfExists(DatabaseTable.users);
 }
