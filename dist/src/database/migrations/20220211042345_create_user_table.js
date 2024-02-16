@@ -1,14 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.down = exports.up = void 0;
-const database_tables_1 = require("../database.tables");
-async function up(knex) {
+const Knex = require('knex');
+const { DatabaseTable } = require('../database.tables');
+module.exports = async function up(knex) {
+    console.log();
     knex.schema
-        .withSchema('{{schemaName}}')
-        .hasTable(database_tables_1.DatabaseTable.users)
+        .hasTable(DatabaseTable.users)
         .then((tableExists) => {
         if (!tableExists) {
-            return knex.schema.createTable(database_tables_1.DatabaseTable.users, (tableBuilder) => {
+            return knex.schema.createTable(DatabaseTable.users, (tableBuilder) => {
                 tableBuilder.string('id').unique().notNullable().primary();
                 tableBuilder.string('email').notNullable().unique();
                 tableBuilder.string('password');
@@ -18,12 +16,9 @@ async function up(knex) {
         }
     })
         .catch((e) => console.error('MIGRATION_ERROR', e));
-}
-exports.up = up;
-async function down(knex) {
-    return knex.schema
-        .withSchema('{{schemaName}}')
-        .dropTableIfExists(database_tables_1.DatabaseTable.users);
-}
-exports.down = down;
+};
+module.exports = async function down(knex) {
+    return knex
+        .dropTableIfExists(DatabaseTable.users);
+};
 //# sourceMappingURL=20220211042345_create_user_table.js.map

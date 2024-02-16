@@ -14,7 +14,7 @@ class KnexFile {
     }
     static getConfig() {
         return {
-            client: 'postgres',
+            client: 'pg',
             connection: KnexFile.getConnection(),
             pool: {
                 min: 2,

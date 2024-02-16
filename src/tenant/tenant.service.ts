@@ -3,10 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseInterface } from '../database/database.interface';
 import { DATABASE_TOKEN } from 'src/database';
 import { Knex } from 'knex';
-const path = require('path');
-
-// Resolve the absolute path to the migrations directory
-const migrationPath = path.resolve(__dirname,'..', 'database', 'migrations');
 
 
 @Injectable()

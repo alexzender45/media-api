@@ -1,32 +1,33 @@
-import { Knex } from 'knex';
-import { DatabaseSchema } from '../database.schema';
-import { DatabaseTable } from '../database.tables';
+//const  {DatabaseSchema} = require('../database.schema');
+const Knex  = require('knex');
+const { DatabaseTable } = require('../database.tables');
+//import { DATABASE_TOKEN } from '../database.token';
+//import { TenantService } from '../../tenant/tenant.service';
 
-export async function up(knex: Knex): Promise<void> {
-  // return knex.transaction(async (trx: Knex.Transaction) =>
+
+module.exports = async function up(knex) {
+  console.log();
   knex.schema
-    .withSchema('{{schemaName}}')
     .hasTable(DatabaseTable.users)
-    .then((tableExists: boolean) => {
-      if (!tableExists) {
-        return knex.schema.createTable(
-          DatabaseTable.users,
-          (tableBuilder: Knex.CreateTableBuilder) => {
-            tableBuilder.string('id').unique().notNullable().primary();
-            tableBuilder.string('email').notNullable().unique();
-            tableBuilder.string('password');
-            tableBuilder.string('role').notNullable();
-            tableBuilder.timestamps(true, true);
-          },
-        );
-      }
-    })
+        .then((tableExists) => {
+          if (!tableExists) {
+            return knex.schema.createTable(
+              DatabaseTable.users,
+              (tableBuilder) => {
+                tableBuilder.string('id').unique().notNullable().primary();
+                tableBuilder.string('email').notNullable().unique();
+                tableBuilder.string('password');
+                tableBuilder.string('role').notNullable();
+                tableBuilder.timestamps(true, true);
+              },
+            );
+          }
+        })
     .catch((e) => console.error('MIGRATION_ERROR', e));
   // );
 }
 
-export async function down(knex: Knex): Promise<void> {
-  return knex.schema
-    .withSchema('{{schemaName}}')
+module.exports = async function down(knex) {
+  return knex
     .dropTableIfExists(DatabaseTable.users);
 }
